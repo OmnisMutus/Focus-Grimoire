@@ -1,0 +1,19 @@
+# IDE / OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Agent Data
+.gemini/
+brain/
+*task.md
+*implementation_plan.md
+*protocol_checklist.md
+*walkthrough.md
+
+# Build / Temp
+node_modules/
+dist/
+build/
+*.log
