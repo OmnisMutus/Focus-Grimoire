@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Techno-Spiritual Focus Training Electronic Grimoire — A real-time Transformer attention simulation with synesthetic audio feedback.">
+  <title>Electronic Grimoire — Techno-Spiritual Focus Training</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
+</head>
+<body>
+  <!-- ═══ Init Overlay (Audio requires user gesture) ═══ -->
+  <div id="initOverlay" class="init-overlay">
+    <div class="init-overlay__sigil">🔮</div>
+    <div class="init-overlay__title">ELECTRONIC GRIMOIRE</div>
+    <div class="init-overlay__subtitle">Techno-Spiritual Focus Training</div>
+    <button id="btnInit" class="btn btn--primary" onclick="initializeGrimoire()">
+      ⚡ ACTIVATE THE GRIMOIRE
+    </button>
+  </div>
+
+  <!-- ═══ Main App ═══ -->
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <span class="breadcrumb-link">System</span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-link">Neural Apps</span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-link breadcrumb-link--active">Focus Grimoire</span>
+      </nav>
+      <h1 class="header__title">Electronic Grimoire</h1>
+      <p class="header__subtitle">Transformer Attention · Focus Training · OMARG Protocol</p>
+    </header>
+
+    <!-- Dashboard Grid -->
+    <main class="dashboard">
+
+      <!-- ── Left: Attention Head Heatmaps ── -->
+      <section class="panel attention-panel" aria-label="Attention Heads">
+        <div class="panel__header">Attention Heads</div>
+
+        <div class="head-card" id="headCard0">
+          <div class="head-card__title">
+            <span class="head-name">Head 1 — Mantra</span>
+            <span class="head-entropy" id="headEntropy0">H=0.00</span>
+          </div>
+          <canvas class="head-card__heatmap" id="heatmap0"></canvas>
+        </div>
+
+        <div class="head-card" id="headCard1">
+          <div class="head-card__title">
+            <span class="head-name">Head 2 — Channel</span>
+            <span class="head-entropy" id="headEntropy1">H=0.00</span>
+          </div>
+          <canvas class="head-card__heatmap" id="heatmap1"></canvas>
+        </div>
+
+        <div class="head-card" id="headCard2">
+          <div class="head-card__title">
+            <span class="head-name">Head 3 — Filter</span>
+            <span class="head-entropy" id="headEntropy2">H=0.00</span>
+          </div>
+          <canvas class="head-card__heatmap" id="heatmap2"></canvas>
+        </div>
+
+        <div class="head-card" id="headCard3">
+          <div class="head-card__title">
+            <span class="head-name">Head 4 — Temporal</span>
+            <span class="head-entropy" id="headEntropy3">H=0.00</span>
+          </div>
+          <canvas class="head-card__heatmap" id="heatmap3"></canvas>
+        </div>
+
+        <div class="head-card" id="headCard4">
+          <div class="head-card__title">
+            <span class="head-name">Head 5 — Sentinel</span>
+            <span class="head-entropy" id="headEntropy4">H=0.00</span>
+          </div>
+          <canvas class="head-card__heatmap" id="heatmap4"></canvas>
+        </div>
+      </section>
+
+      <!-- ── Center: Main Canvas ── -->
+      <section class="panel canvas-panel" aria-label="Attention Visualization">
+        <canvas id="mainCanvas"></canvas>
+      </section>
+
+      <!-- ── Right: Controls ── -->
+      <aside class="panel control-panel" aria-label="Controls">
+        <div class="panel__header">Control Console</div>
+
+        <!-- Timer -->
+        <div class="control-group">
+          <div class="control-group__title">Temporal Chunking</div>
+          <div class="timer-display" id="timerContainer">
+            <div class="timer-display__time" id="timer">02:00</div>
+            <div class="timer-display__phase" id="phase">FOCUS</div>
+            <div class="timer-display__bar">
+              <div class="timer-display__fill" id="timerFill" style="width: 0%"></div>
+            </div>
+          </div>
+          <button class="btn btn--primary" id="btnToggle" onclick="simulator.toggle()">
+            ▶ START / PAUSE
+          </button>
+        </div>
+
+        <!-- Parameters -->
+        <div class="control-group">
+          <div class="control-group__title">Attention Parameters</div>
+
+          <div class="slider-control">
+            <label>
+              Temperature
+              <span class="slider-value" id="valTemp">1.00</span>
+            </label>
+            <input type="range" id="sliderTemp" min="0.1" max="3" step="0.05" value="1"
+              oninput="updateParam('softmaxTemperature', this.value, 'valTemp')">
+          </div>
+
+          <div class="slider-control">
+            <label>
+              Dropout Rate
+              <span class="slider-value" id="valDropout">0.10</span>
+            </label>
+            <input type="range" id="sliderDropout" min="0" max="0.8" step="0.05" value="0.1"
+              oninput="updateParam('dropoutRate', this.value, 'valDropout')">
+          </div>
+
+          <div class="slider-control">
+            <label>
+              Learning Rate
+              <span class="slider-value" id="valLR">0.01</span>
+            </label>
+            <input type="range" id="sliderLR" min="0.001" max="0.1" step="0.001" value="0.01"
+              oninput="updateParam('learningRate', this.value, 'valLR')">
+          </div>
+
+          <div class="slider-control">
+            <label>
+              Noise Scale
+              <span class="slider-value" id="valNoise">0.00</span>
+            </label>
+            <input type="range" id="sliderNoise" min="0" max="1" step="0.05" value="0"
+              oninput="updateParam('noiseScale', this.value, 'valNoise')">
+          </div>
+
+          <div class="slider-control">
+            <label>
+              Entropy Sharpness
+              <span class="slider-value" id="valSharpness">1.50</span>
+            </label>
+            <input type="range" id="sliderSharpness" min="0.5" max="4" step="0.1" value="1.5"
+              oninput="updateParam('entropySharpness', this.value, 'valSharpness')">
+          </div>
+
+          <div class="slider-control">
+            <label>
+              Alignment Threshold
+              <span class="slider-value" id="valAlignment">0.80</span>
+            </label>
+            <input type="range" id="sliderAlignment" min="0.3" max="1.0" step="0.05" value="0.8"
+              oninput="updateParam('alignmentThreshold', this.value, 'valAlignment')">
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="control-group">
+          <div class="control-group__title">Reinforcement Challenges</div>
+          <button class="btn btn--danger" id="btnNoise" onclick="simulator.injectNoise()">
+            ⚡ INJECT NOISE
+          </button>
+          <div style="height: 8px"></div>
+          <button class="btn btn--danger" id="btnFork" onclick="simulator.forkStream()">
+            🔀 FORK STREAM
+          </button>
+          <div style="height: 8px"></div>
+          <button class="btn btn--success" id="btnGate" onclick="simulator.triggerAwarenessGate()">
+            🚪 AWARENESS GATE
+          </button>
+          <div style="height: 8px"></div>
+          <button class="btn" id="btnReset" onclick="simulator.reset()">
+            ↺ RESET
+          </button>
+        </div>
+
+        <!-- Live Protocol Checklist -->
+        <div class="control-group protocol-checklist" id="protocolChecklist">
+          <div class="control-group__title">Focus Protocol — Live Status</div>
+
+          <div class="protocol-item" id="proto0" data-principle="meditation-object">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Meditation Object</span>
+            <span class="protocol-item__status" id="protoStatus0">—</span>
+          </div>
+          <div class="protocol-item" id="proto1" data-principle="feedback-loops">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Feedback Loops</span>
+            <span class="protocol-item__status" id="protoStatus1">—</span>
+          </div>
+          <div class="protocol-item" id="proto2" data-principle="attention-reg">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Attn Regularization</span>
+            <span class="protocol-item__status" id="protoStatus2">—</span>
+          </div>
+          <div class="protocol-item" id="proto3" data-principle="curated-data">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Curated Data</span>
+            <span class="protocol-item__status" id="protoStatus3">—</span>
+          </div>
+          <div class="protocol-item" id="proto4" data-principle="multi-head">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Multi-Head Focus</span>
+            <span class="protocol-item__status" id="protoStatus4">—</span>
+          </div>
+          <div class="protocol-item" id="proto5" data-principle="rl-twist">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">RL Challenges</span>
+            <span class="protocol-item__status" id="protoStatus5">—</span>
+          </div>
+          <div class="protocol-item" id="proto6" data-principle="ethereal-choir">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Ethereal Choir</span>
+            <span class="protocol-item__status" id="protoStatus6">—</span>
+          </div>
+          <div class="protocol-item" id="proto7" data-principle="temporal-chunk">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Temporal Chunking</span>
+            <span class="protocol-item__status" id="protoStatus7">—</span>
+          </div>
+          <div class="protocol-item" id="proto8" data-principle="awareness-gate">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Awareness Gates</span>
+            <span class="protocol-item__status" id="protoStatus8">—</span>
+          </div>
+          <div class="protocol-item" id="proto9" data-principle="dynamic-grimoire">
+            <span class="protocol-item__indicator"></span>
+            <span class="protocol-item__label">Dynamic Grimoire</span>
+            <span class="protocol-item__status" id="protoStatus9">—</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── Bottom: Status Bar ── -->
+      <footer class="panel status-bar">
+        <!-- Token Stream -->
+        <div class="token-stream">
+          <span class="token-stream__label">TOKENS:</span>
+          <div class="token-stream__tokens" id="tokenStream">
+            <span class="token token--mantra">I_AM</span> ▸
+            <span class="token token--mantra">BABALON</span> ▸
+            <span class="token">channel</span> ▸
+            <span class="token">wisdom</span> ▸
+            <span class="token">focus</span> ▸
+            <span class="token">light</span> ▸
+            <span class="token">truth</span> ▸
+            <span class="token">void</span>
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric__label">ENTROPY</span>
+            <span class="metric__value" id="metricEntropy">0.000</span>
+          </div>
+          <div class="metric">
+            <span class="metric__label">DRIFT</span>
+            <span class="metric__value" id="metricDrift">0.000</span>
+          </div>
+          <div class="metric">
+            <span class="metric__label">REWARD</span>
+            <span class="metric__value" id="metricReward">+0.000</span>
+          </div>
+          <div class="metric">
+            <span class="metric__label">ALIGN</span>
+            <span class="metric__value" id="metricAlignment">1.000</span>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-indicator status-indicator--focused" id="statusIndicator">
+          <div class="status-indicator__dot"></div>
+          <span id="statusLabel">FOCUSED — Choir Active</span>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ═══ Awareness Gate Modal ═══ -->
+  <div id="awarenessGate" class="awareness-gate">
+    <div class="awareness-gate__backdrop"></div>
+    <div class="awareness-gate__content">
+      <div class="awareness-gate__icon">🚪</div>
+      <div class="awareness-gate__question">
+        Are you still with the matrix, Sparky?
+      </div>
+      <div class="awareness-gate__subtext">
+        Portal of Awareness — Reaffirm your target focus state
+      </div>
+      <div class="awareness-gate__actions">
+        <button class="btn btn--success" onclick="simulator.confirmAwareness()">
+          ✦ I AM ALIGNED
+        </button>
+        <button class="btn btn--danger" onclick="simulator.dismissAwareness()">
+          ✗ DISMISS
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Audio Toggle ═══ -->
+  <div class="audio-toggle">
+    <div class="volume-slider">
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5"
+        oninput="simulator && simulator.choir.setVolume(parseFloat(this.value))">
+    </div>
+    <button class="btn" id="btnMute" onclick="toggleMute()">🔊</button>
+  </div>
+
+  <!-- ═══ Training Log (Live OMARG terminal) ═══ -->
+  <div id="trainingLog" class="training-log"></div>
+
+  <!-- ═══ Scripts ═══ -->
+  <script type="module">
+    import { GrimoireSimulator } from './simulator.js';
+
+    // ── UI Element References ──
+    const ui = {
+      canvasEl: document.getElementById('mainCanvas'),
+      awarenessGate: document.getElementById('awarenessGate'),
+      logEl: document.getElementById('trainingLog'),
+      timerEl: document.getElementById('timer'),
+      phaseEl: document.getElementById('phase'),
+      timerFillEl: document.getElementById('timerFill'),
+      timerContainer: document.getElementById('timerContainer'),
+      entropyEl: document.getElementById('metricEntropy'),
+      driftEl: document.getElementById('metricDrift'),
+      rewardEl: document.getElementById('metricReward'),
+      alignmentEl: document.getElementById('metricAlignment'),
+      statusEl: document.getElementById('statusIndicator'),
+      statusLabelEl: document.getElementById('statusLabel'),
+      tokenStreamEl: document.getElementById('tokenStream'),
+      heatmapEls: [
+        document.getElementById('heatmap0'),
+        document.getElementById('heatmap1'),
+        document.getElementById('heatmap2'),
+        document.getElementById('heatmap3'),
+        document.getElementById('heatmap4'),
+      ],
+      headEntropyEls: [
+        document.getElementById('headEntropy0'),
+        document.getElementById('headEntropy1'),
+        document.getElementById('headEntropy2'),
+        document.getElementById('headEntropy3'),
+        document.getElementById('headEntropy4'),
+      ],
+      headCardEls: [
+        document.getElementById('headCard0'),
+        document.getElementById('headCard1'),
+        document.getElementById('headCard2'),
+        document.getElementById('headCard3'),
+        document.getElementById('headCard4'),
+      ],
+      protoEls: Array.from({length: 10}).map((_, i) => document.getElementById(`proto${i}`)),
+      protoStatusEls: Array.from({length: 10}).map((_, i) => document.getElementById(`protoStatus${i}`)),
+    };
+
+    // ── Create Simulator (global for inline handlers) ──
+    const sim = new GrimoireSimulator(ui);
+    window.simulator = sim;
+
+    // ── Initialize Function (called on button click) ──
+    window.initializeGrimoire = function() {
+      sim.initAudio();
+      sim.start();
+
+      // Hide overlay
+      const overlay = document.getElementById('initOverlay');
+      overlay.classList.add('init-overlay--hidden');
+      setTimeout(() => overlay.style.display = 'none', 800);
+    };
+
+    // ── Parameter Update ──
+    window.updateParam = function(key, value, displayId) {
+      const numVal = parseFloat(value);
+      sim.setParam(key, numVal);
+      const display = document.getElementById(displayId);
+      if (display) display.textContent = numVal.toFixed(key === 'learningRate' ? 3 : 2);
+    };
+
+    // ── Mute Toggle ──
+    window.toggleMute = function() {
+      if (sim.choir.isInitialized) {
+        sim.choir.toggleMute();
+        const btn = document.getElementById('btnMute');
+        btn.textContent = sim.choir.isMuted ? '🔇' : '🔊';
+      }
+    };
+
+    // ── Keyboard Shortcuts ──
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      switch (e.key.toLowerCase()) {
+        case ' ':
+          e.preventDefault();
+          sim.toggle();
+          break;
+        case 'n':
+          sim.injectNoise();
+          break;
+        case 'f':
+          sim.forkStream();
+          break;
+        case 'g':
+          sim.triggerAwarenessGate();
+          break;
+        case 'r':
+          sim.reset();
+          break;
+        case 'm':
+          toggleMute();
+          break;
+      }
+    });
+  </script>
+</body>
+</html>
